@@ -4,12 +4,8 @@ import { Provider } from '../../../challenges/Provider'
 import { EventEmitter } from 'events'
 
 import * as db from '../../../database'
+import { DatabaseChallenge } from '../../../database/challenges'
 import { deepCopy } from '../../../util'
-
-interface DatabaseChallenge {
-  id: string;
-  data: Omit<Challenge, 'id'>;
-}
 
 class DatabaseProvider extends EventEmitter implements Provider {
   private challenges: Challenge[] = []
@@ -21,7 +17,7 @@ class DatabaseProvider extends EventEmitter implements Provider {
 
   private async update (): Promise<void> {
     try {
-      const dbchallenges = await db.challenges.getAllChallenges() as DatabaseChallenge[]
+      const dbchallenges = await db.challenges.getAllChallenges()
 
       this.challenges = dbchallenges.map(({ id, data }) => {
         return {
@@ -56,7 +52,7 @@ class DatabaseProvider extends EventEmitter implements Provider {
   async updateChallenge (chall: Challenge): Promise<void> {
     const originalData = await db.challenges.getChallengeById({
       id: chall.id
-    }) as DatabaseChallenge
+    })
 
     // If we're inserting, have sane defaults
     if (originalData === undefined) {

@@ -1,4 +1,4 @@
-import config from '../../config/server'
+import config from '../config/server'
 import path from 'path'
 import { Challenge, CleanedChallenge } from './types'
 import { Provider, ProviderConstructor } from './Provider'
@@ -35,8 +35,8 @@ const onUpdate = (newChallenges: Challenge[]): void => {
 }
 
 void import(path.join('../providers', config.challengeProvider.name))
-  .then(({ default: Provider }: { default: ProviderConstructor }) => {
-    provider = new Provider(config.challengeProvider.options)
+  .then(({ default: Provider }: { default: ProviderConstructor }): void => {
+    provider = new Provider(config.challengeProvider.options ?? {})
 
     provider.on('update', onUpdate)
   })
@@ -53,11 +53,11 @@ export function getCleanedChallenges (): CleanedChallenge[] {
   return cleanedChallenges
 }
 
-export function getChallenge (id: string): Challenge {
+export function getChallenge (id: string): Challenge | undefined {
   return challengesMap.get(id)
 }
 
-export function getCleanedChallenge (id: string): CleanedChallenge {
+export function getCleanedChallenge (id: string): CleanedChallenge | undefined {
   return cleanedChallengesMap.get(id)
 }
 

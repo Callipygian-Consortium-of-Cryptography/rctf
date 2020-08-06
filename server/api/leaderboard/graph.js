@@ -1,18 +1,18 @@
 import { responses } from '../../responses'
 import * as cache from '../../cache'
-import config from '../../../config/server'
+import config from '../../config/server'
 
 export default {
   method: 'GET',
   path: '/leaderboard/graph',
   requireAuth: false,
   schema: {
-    query: {
+    querystring: {
       type: 'object',
       properties: {
         division: {
-          type: 'integer',
-          enum: Object.values(config.divisions)
+          type: 'string',
+          enum: Object.keys(config.divisions)
         },
         limit: {
           type: 'integer',

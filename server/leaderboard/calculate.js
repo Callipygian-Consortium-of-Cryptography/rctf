@@ -1,7 +1,7 @@
 import { workerData, parentPort } from 'worker_threads'
 import { getScore } from '../util/scores'
 import { calcSamples } from './samples'
-import config from '../../config/server'
+import config from '../config/server'
 
 const {
   data: {
@@ -84,7 +84,7 @@ const calculateScores = (sample) => {
         currScore += value
       }
     }
-    userScores.push([user.id, user.name, parseInt(user.division), currScore, lastSolve])
+    userScores.push([user.id, user.name, user.division, currScore, lastSolve])
   }
 
   return {

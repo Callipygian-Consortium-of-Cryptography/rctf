@@ -1,15 +1,13 @@
 import { responses } from '../../responses'
 import * as cache from '../../cache'
-import config from '../../../config/server'
-
-const stringDivisions = Object.values(config.divisions).map(String)
+import config from '../../config/server'
 
 export default {
   method: 'GET',
   path: '/leaderboard/now',
   requireAuth: false,
   schema: {
-    query: {
+    querystring: {
       type: 'object',
       properties: {
         limit: {
@@ -24,7 +22,7 @@ export default {
         },
         division: {
           type: 'string',
-          enum: stringDivisions
+          enum: Object.keys(config.divisions)
         }
       },
       required: ['limit', 'offset']

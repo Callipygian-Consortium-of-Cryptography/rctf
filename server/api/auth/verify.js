@@ -2,6 +2,7 @@ import * as auth from '../../auth'
 import * as cache from '../../cache'
 import * as database from '../../database'
 import { responses } from '../../responses'
+import { DivisionACLError } from '../../errors'
 
 export default {
   method: 'POST',
@@ -34,7 +35,7 @@ export default {
         name: tokenData.name
       })
     } else if (tokenData.kind === 'recover') {
-      const user = await database.auth.getUserByIdAndEmail({
+      const user = await database.users.getUserByIdAndEmail({
         id: tokenData.userId,
         email: tokenData.email
       })
@@ -46,11 +47,15 @@ export default {
     } else if (tokenData.kind === 'update') {
       let result
       try {
-        result = await database.auth.updateUser({
+        result = await database.users.updateUser({
           id: tokenData.userId,
-          email: tokenData.email
+          email: tokenData.email,
+          division: tokenData.division
         })
       } catch (e) {
+        if (e instanceof DivisionACLError) {
+          return responses.badEmailChangeDivision
+        }
         if (e.constraint === 'users_email_key') {
           return responses.badKnownEmail
         }

@@ -1,4 +1,3 @@
-import config from '../config'
 import { request, handleResponse } from './util'
 
 export const privateProfile = async () => {
@@ -8,7 +7,7 @@ export const privateProfile = async () => {
 }
 
 export const pendingPrivateProfile = async ({ authToken }) => {
-  const { data } = await (await fetch(`${config.apiEndpoint}/users/me`, {
+  const { data } = await (await fetch('/api/v1/users/me', {
     headers: {
       authorization: `Bearer ${authToken}`
     }
@@ -26,7 +25,7 @@ export const publicProfile = async (uuid) => {
 export const updateAccount = async ({ name, division }) => {
   const resp = await request('PATCH', '/users/me', {
     name,
-    division: division === undefined ? undefined : Number.parseInt(division)
+    division
   })
 
   if (resp.kind === 'badRateLimit') {

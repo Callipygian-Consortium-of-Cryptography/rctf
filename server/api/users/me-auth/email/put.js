@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid'
 import emailValidator from 'email-validator'
-import config from '../../../../../config/server'
+import config from '../../../../config/server'
 import { responses } from '../../../../responses'
 import * as cache from '../../../../cache'
 import * as util from '../../../../util'
@@ -29,17 +29,20 @@ export default {
       return responses.badEmail
     }
 
-    if (config.verifyEmail) {
-      const checkUser = await database.auth.getUserByEmail({
+    if (config.email) {
+      const checkUser = await database.users.getUserByEmail({
         email
       })
       if (checkUser !== undefined) {
         return responses.badKnownEmail
       }
+      if (config.divisionACLs && !util.restrict.divisionAllowed(email, user.division)) {
+        return responses.badEmailChangeDivision
+      }
     } else {
       let result
       try {
-        result = await database.auth.updateUser({
+        result = await database.users.updateUser({
           id: user.id,
           email
         })
@@ -61,7 +64,8 @@ export default {
       verifyId: verifyUuid,
       kind: 'update',
       userId: user.id,
-      email
+      email,
+      division: user.division
     })
 
     try {
